@@ -59,6 +59,7 @@ data class CommandLineOptions(
     val docker: DockerCommandLineOptions = DockerCommandLineOptions(),
     val cacheType: CacheType = CacheType.Volume,
     val existingNetworkToUse: String? = null,
+    val cidFolder: Path? = null,
     val skipPrerequisites: Boolean = false,
     val disableTelemetry: Boolean? = null,
     val enableBuildKit: Boolean? = null,

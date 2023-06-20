@@ -126,6 +126,13 @@ class CommandLineOptionsParser(
         ValueConverters.pathToFile(pathResolverFactory),
     )
 
+    private val cidFolder: Path? by valueOption(
+        executionOptionsGroup,
+        "cid-folder",
+        "Folder to write container IDs to. One file is written per container, named by the container name, containing the container ID of that container. If not set, no container ID files are written.",
+        ValueConverters.pathToDirectory(pathResolverFactory),
+    )
+
     private val requestedOutputStyle: OutputStyle? by valueOption<OutputStyle?, OutputStyle>(
         outputOptionsGroup,
         "output",
@@ -417,6 +424,7 @@ class CommandLineOptionsParser(
         ),
         cacheType = cacheType,
         existingNetworkToUse = existingNetworkToUse,
+        cidFolder = cidFolder,
         skipPrerequisites = skipPrerequisites,
         disableTelemetry = disableTelemetry,
         enableBuildKit = enableBuildKit,

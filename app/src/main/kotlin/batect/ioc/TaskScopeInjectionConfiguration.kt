@@ -83,7 +83,7 @@ private val runnersModule = DI.Module("Task scope: execution.model.steps.runners
     bind<PullImageStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> PullImageStepRunner(instance(), instance(), logger) }
     bind<RemoveContainerStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> RemoveContainerStepRunner(instance(), logger) }
     bind<RunContainerSetupCommandsStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> RunContainerSetupCommandsStepRunner(instance(), instance(), instance(), instance(), instance(), logger) }
-    bind<RunContainerStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> RunContainerStepRunner(instance(), instance(), instance(), logger) }
+    bind<RunContainerStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> RunContainerStepRunner(instance(), instance(), instance(), instance(), logger) }
     bind<StopContainerStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> StopContainerStepRunner(instance(), logger) }
     bind<WaitForContainerToBecomeHealthyStepRunner>() with scoped(TaskScope).singletonWithLogger { logger -> WaitForContainerToBecomeHealthyStepRunner(instance(), instance(), instance(), logger) }
 }

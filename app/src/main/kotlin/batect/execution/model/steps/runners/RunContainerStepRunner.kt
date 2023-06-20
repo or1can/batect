@@ -16,6 +16,7 @@
 
 package batect.execution.model.steps.runners
 
+import batect.cli.CommandLineOptions
 import batect.dockerclient.DockerClient
 import batect.dockerclient.DockerClientException
 import batect.dockerclient.ReadyNotification
@@ -29,11 +30,14 @@ import batect.primitives.CancellationContext
 import batect.primitives.runBlocking
 import batect.ui.containerio.ContainerIOStreamingOptions
 import kotlinx.coroutines.launch
+import java.nio.file.Files
+import java.nio.file.StandardOpenOption
 
 class RunContainerStepRunner(
     private val client: DockerClient,
     private val ioStreamingOptions: ContainerIOStreamingOptions,
     private val cancellationContext: CancellationContext,
+    private val commandLineOptions: CommandLineOptions,
     private val logger: Logger,
 ) {
     fun run(step: RunContainerStep, eventSink: TaskEventSink) {
@@ -47,6 +51,17 @@ class RunContainerStepRunner(
                 launch {
                     startedNotification.waitForReady()
 
+                    if (commandLineOptions.cidFolder != null) {
+                        val cidFileOutputStream = Files.newOutputStream(
+                            commandLineOptions.cidFolder.resolve(step.container.name),
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING,
+                            StandardOpenOption.WRITE,
+                        )
+                        cidFileOutputStream.write(step.dockerContainer.reference.id.toByteArray())
+                        cidFileOutputStream.write("\n".toByteArray())
+                    }
+
                     eventSink.postEvent(ContainerStartedEvent(step.container))
                 }
 
@@ -57,6 +72,10 @@ class RunContainerStepRunner(
                     stdin,
                     startedNotification,
                 )
+
+                if (commandLineOptions.cidFolder != null) {
+                    Files.deleteIfExists(commandLineOptions.cidFolder.resolve(step.container.name))
+                }
 
                 eventSink.postEvent(RunningContainerExitedEvent(step.container, exitCode))
             }
